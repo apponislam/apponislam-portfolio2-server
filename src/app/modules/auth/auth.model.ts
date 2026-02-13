@@ -1,0 +1,61 @@
+import mongoose, { Schema } from "mongoose";
+import { Profession, SocialLink } from "./auth.interface";
+
+const SocialLinkSchema = new Schema<SocialLink>({
+    platform: { type: String, required: [true, "Platform is required"] },
+    url: { type: String, required: [true, "URL is required"] },
+});
+
+const UserSchema = new Schema(
+    {
+        fullName: { type: String, required: [true, "Full name is required"] },
+        email: {
+            type: String,
+            required: [true, "Email is required"],
+            unique: true,
+            index: true,
+            match: [/.+\@.+\..+/, "Please enter a valid email address"],
+        },
+        username: { type: String, unique: true, sparse: true, index: true },
+        role: {
+            type: String,
+            enum: ["superadmin", "admin", "moderator", "user", "guest"],
+            default: "user",
+            required: [true, "Role is required"],
+        },
+        profession: {
+            type: String,
+            enum: Object.values(Profession),
+        },
+        password: { type: String, required: [true, "Password is required"] },
+        avatar: String,
+        bio: String,
+        website: String,
+        location: String,
+        skills: { type: [String], default: [] },
+        socialLinks: { type: [SocialLinkSchema], default: [] },
+
+        isActive: { type: Boolean, default: true },
+        isDeleted: { type: Boolean, default: false },
+        isDeactivated: { type: Boolean, default: false },
+        lastLogin: Date,
+    },
+    {
+        timestamps: true,
+        versionKey: false,
+    },
+);
+
+// Single-field indexes
+UserSchema.index({ email: 1 }, { unique: true, name: "user_email_unique" });
+UserSchema.index({ username: 1 }, { unique: true, sparse: true, name: "user_username_unique" });
+UserSchema.index({ role: 1 }, { name: "user_role_index" });
+UserSchema.index({ profession: 1 }, { name: "user_profession_index" });
+UserSchema.index({ isActive: 1 }, { name: "user_isActive_index" });
+UserSchema.index({ lastLogin: -1 }, { name: "user_lastLogin_desc_index" });
+
+// Compound indexes
+UserSchema.index({ role: 1, isActive: 1 }, { name: "user_role_isActive_index" });
+UserSchema.index({ profession: 1, isActive: 1 }, { name: "user_profession_isActive_index" });
+
+export const UserModel = mongoose.model("User", UserSchema);
