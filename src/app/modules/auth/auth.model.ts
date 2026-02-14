@@ -43,6 +43,14 @@ const UserSchema = new Schema(
     {
         timestamps: true,
         versionKey: false,
+        toJSON: {
+            transform(doc, ret) {
+                const r = ret as any;
+                // r.id = r._id;
+                delete r.password;
+                return r;
+            },
+        },
     },
 );
 
@@ -57,5 +65,10 @@ UserSchema.index({ lastLogin: -1 }, { name: "user_lastLogin_desc_index" });
 // Compound indexes
 UserSchema.index({ role: 1, isActive: 1 }, { name: "user_role_isActive_index" });
 UserSchema.index({ profession: 1, isActive: 1 }, { name: "user_profession_isActive_index" });
+
+UserSchema.post("save", function (doc, next) {
+    doc.password = undefined as any;
+    next();
+});
 
 export const UserModel = mongoose.model("User", UserSchema);
