@@ -1,16 +1,9 @@
 import { Server } from "http";
 import app from "./app";
-// import config from "./app/config";
 import mongoose from "mongoose";
 import http from "http";
 import config from "./app/config";
-// import createSuperAdmin from "./scripts/createSuperAdmin";
-// import { initSocket } from "./socket/socket";
-// import { findNearbyPlaces, geocodeAddress } from "./app/modules/property/geocodingService";
-// import axios from "axios";
-// import createBotAdmin from "./scripts/createBotAdmin";
-// import { reviewReminderCron } from "./app/modules/rating/ratingReminder.cron";
-// import { verifyMailConnection } from "./shared/mailTest";
+import { seedSuperAdmin } from "./app/modules/auth/auth.seed";
 
 let server: Server;
 
@@ -18,6 +11,8 @@ async function main() {
     try {
         await mongoose.connect(config.mongodb_url as string);
         server = http.createServer(app);
+
+        await seedSuperAdmin();
 
         // initSocket(server);
 
@@ -38,30 +33,26 @@ async function main() {
 
 main();
 
-process.on("unhandledRejection", (error) => {
-    console.log("❌ Unhandled Rejection detected:", error);
+const shutdown = (error?: any, exitCode = 1, signal?: string) => {
+    if (error) console.error(`❌ ${signal || "Error"} detected:`, error);
+    else if (signal) console.log(`⚠️ ${signal} received. Shutting down gracefully...`);
 
     if (server) {
-        server.close(() => {
-            // reviewReminderCron.stop();
-            process.exit(1);
+        server.close(async () => {
+            console.log("✅ Server closed.");
+            await mongoose.disconnect();
+            console.log("✅ MongoDB disconnected.");
+            process.exit(exitCode);
         });
     } else {
-        // reviewReminderCron.stop();
-        process.exit(1);
+        process.exit(exitCode);
     }
-});
+};
 
-process.on("uncaughtException", (error) => {
-    console.log("❌ Uncaught Exception detected:", error);
-
-    if (server) {
-        server.close(() => {
-            // reviewReminderCron.stop();
-            process.exit(1);
-        });
-    } else {
-        // reviewReminderCron.stop();
-        process.exit(1);
-    }
+process.on("unhandledRejection", (reason) => shutdown(reason, 1, "Unhandled Rejection"));
+process.on("uncaughtException", (error) => shutdown(error, 1, "Uncaught Exception"));
+process.on("SIGINT", () => shutdown(undefined, 0, "SIGINT"));
+process.on("SIGTERM", () => shutdown(undefined, 0, "SIGTERM"));
+process.on("warning", (warning) => {
+    console.warn("⚠️ Node.js Warning:", warning.name, warning.message, warning.stack);
 });
