@@ -37,6 +37,22 @@ export interface User {
     isActive?: boolean;
     isDeleted?: boolean;
     isDeactivated?: boolean;
+    isEmailVerified?: boolean;
+
+    // Password reset fields
+    resetPasswordOtp?: string;
+    resetPasswordOtpExpiry?: Date;
+    resetPasswordToken?: string;
+    resetPasswordTokenExpiry?: Date;
+
+    // Email verification fields (new)
+    verificationToken?: string;
+    verificationExpiry?: Date;
+
+    // Email update fields
+    pendingEmail?: string;
+    emailVerificationToken?: string;
+    emailVerificationExpiry?: Date;
 
     lastLogin?: Date;
     createdAt?: Date;

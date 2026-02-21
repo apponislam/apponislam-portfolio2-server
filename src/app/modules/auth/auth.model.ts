@@ -38,7 +38,27 @@ const UserSchema = new Schema(
         isActive: { type: Boolean, default: true },
         isDeleted: { type: Boolean, default: false },
         isDeactivated: { type: Boolean, default: false },
-        lastLogin: Date,
+        isEmailVerified: { type: Boolean, default: false },
+
+        // Password reset fields
+        resetPasswordOtp: { type: String },
+        resetPasswordOtpExpiry: { type: Date },
+        resetPasswordToken: { type: String },
+        resetPasswordTokenExpiry: { type: Date },
+
+        // Email verification fields
+        verificationToken: { type: String },
+        verificationExpiry: { type: Date },
+
+        // Email update fields
+        pendingEmail: {
+            type: String,
+            match: [/.+\@.+\..+/, "Please enter a valid email address"],
+        },
+        emailVerificationToken: { type: String },
+        emailVerificationExpiry: { type: Date },
+
+        lastLogin: { type: Date },
     },
     {
         timestamps: true,
@@ -46,8 +66,15 @@ const UserSchema = new Schema(
         toJSON: {
             transform(doc, ret) {
                 const r = ret as any;
-                // r.id = r._id;
                 delete r.password;
+                delete r.resetPasswordOtp;
+                delete r.resetPasswordOtpExpiry;
+                delete r.resetPasswordToken;
+                delete r.resetPasswordTokenExpiry;
+                delete r.verificationToken;
+                delete r.verificationExpiry;
+                delete r.emailVerificationToken;
+                delete r.emailVerificationExpiry;
                 return r;
             },
         },
@@ -65,6 +92,11 @@ UserSchema.index({ lastLogin: -1 }, { name: "user_lastLogin_desc_index" });
 // Compound indexes
 UserSchema.index({ role: 1, isActive: 1 }, { name: "user_role_isActive_index" });
 UserSchema.index({ profession: 1, isActive: 1 }, { name: "user_profession_isActive_index" });
+
+// Index for token lookups
+UserSchema.index({ resetPasswordToken: 1 }, { name: "user_resetPasswordToken_index", sparse: true });
+UserSchema.index({ verificationToken: 1 }, { name: "user_verificationToken_index", sparse: true });
+UserSchema.index({ emailVerificationToken: 1 }, { name: "user_emailVerificationToken_index", sparse: true });
 
 UserSchema.post("save", function (doc, next) {
     doc.password = undefined as any;

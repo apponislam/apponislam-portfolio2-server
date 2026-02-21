@@ -1,28 +1,31 @@
 import { Router } from "express";
-// import { authControllers } from "./auth.controller";
-// import validateRequest from "../../middlewares/validateRequest";
-// import { loginSchema, registerSchema } from "./auth.validation";
-// import { handleFileOrJson } from "../../../utils/handleFileOrJson";
-// import auth from "../../middlewares/auth";
+import { authControllers } from "./auth.controllers";
+import validateRequest from "../../middlewares/validateRequest";
+import { changePasswordSchema, loginSchema, registerSchema, resendEmailUpdateSchema, resendVerificationSchema, updateEmailSchema, updateProfileSchema } from "./auth.validations";
+import auth from "../../middlewares/auth";
 const router = Router();
 
-// router.post("/register", handleFileOrJson({ fileField: "profile" }), validateRequest(registerSchema), authControllers.register);
-// router.post("/resend-verify-email", authControllers.resendVerifyEmailController);
-// router.get("/verify-email", authControllers.verifyEmailController);
+// Public routes
+router.post("/register", validateRequest(registerSchema), authControllers.register);
+router.post("/login", validateRequest(loginSchema), authControllers.login);
+router.get("/verify-email", authControllers.verifyEmail);
+router.post("/resend-verification", auth, authControllers.resendVerificationEmail);
+router.post("/refresh-token", authControllers.refreshAccessToken);
+router.post("/forgot-password", authControllers.requestPasswordReset);
+router.post("/verify-otp", authControllers.verifyOtp);
+router.post("/resend-otp", authControllers.resendOtp);
+router.post("/reset-password", authControllers.resetPassword);
 
-// router.post("/login", validateRequest(loginSchema), authControllers.login);
+// Protected routes (require auth)
+router.get("/me", auth, authControllers.getMe);
+router.post("/logout", auth, authControllers.logout);
+router.patch("/profile", auth, validateRequest(updateProfileSchema), authControllers.updateProfile);
+router.post("/change-password", auth, validateRequest(changePasswordSchema), authControllers.changePassword);
+router.post("/update-email", auth, validateRequest(updateEmailSchema), authControllers.updateEmail);
+router.get("/verify-new-email", authControllers.verifyNewEmail);
+router.post("/resend-email-update", auth, validateRequest(resendEmailUpdateSchema), authControllers.resendEmailUpdate);
 
-// router.get("/me", auth, authControllers.getMeController);
-
-// router.post("/refresh-token", authControllers.refreshAccessToken);
-
-// router.post("/logout", authControllers.logout);
-
-// router.post("/forgot-password", authControllers.requestPasswordResetOtpController);
-// router.post("/verify-otp", authControllers.verifyOtpController);
-// router.post("/resend-reset-otp", authControllers.resendPasswordResetOtpController);
-// router.post("/reset-password", authControllers.resetPasswordWithTokenController);
-// router.post("/change-password", auth, authControllers.changePasswordController);
-// router.post("/set-user-password", auth, authControllers.setUserPasswordByAdminController);
+// Admin only routes
+router.post("/set-password/:userId", auth, authControllers.setUserPassword);
 
 export const authRoutes = router;
