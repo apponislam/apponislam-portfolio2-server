@@ -2,29 +2,32 @@ import bcrypt from "bcrypt";
 import { UserModel } from "./auth.model";
 import config from "../../config";
 
-export const seedManager = async () => {
+export const seedSuperAdmin = async () => {
     try {
-        const managerExists = await UserModel.findOne({ role: "MANAGER" });
+        const superAdminExists = await UserModel.findOne({ role: "superadmin" });
 
-        if (!managerExists) {
+        if (!superAdminExists) {
             const hashedPassword = await bcrypt.hash(config.superAdminPassword as string, Number(config.bcrypt_salt_rounds));
 
-            const manager = {
-                firstName: "Super",
-                lastName: "Admin",
+            const superAdmin = {
+                fullName: "Super Admin",
                 email: config.superAdminEmail,
                 password: hashedPassword,
-                role: "MANAGER",
-                phone: "0000000000",
+                role: "superadmin",
+                username: "superadmin",
                 location: "Headquarters",
                 isActive: true,
                 isEmailVerified: true,
+                isDeleted: false,
+                isDeactivated: false,
             };
 
-            await UserModel.create(manager);
-            console.log("✅ Manager created:", config.superAdminEmail);
+            await UserModel.create(superAdmin);
+            console.log("✅ Super Admin created successfully:", config.superAdminEmail);
+        } else {
+            console.log("ℹ️ Super Admin already exists");
         }
     } catch (error) {
-        console.error("Error seeding manager:", error);
+        console.error("Error seeding super admin:", error);
     }
 };
