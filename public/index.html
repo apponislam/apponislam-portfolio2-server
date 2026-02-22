@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Portfolio · Server Root</title>
+        <style>
+            /* reset & full-screen base */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family:
+                    system-ui,
+                    -apple-system,
+                    "Segoe UI",
+                    Roboto,
+                    "Helvetica Neue",
+                    sans-serif;
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                color: #f1f5f9;
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                line-height: 1.6;
+            }
+
+            .container {
+                width: 100%;
+                max-width: 64rem;
+                padding: 2rem 1.5rem;
+                margin: 0 auto;
+            }
+
+            .hero {
+                text-align: center;
+                animation: fadeIn 1.2s ease-out;
+            }
+
+            .badge {
+                display: inline-block;
+                background: rgba(56, 189, 248, 0.15);
+                color: #7dd3fc;
+                font-size: 0.875rem;
+                font-weight: 500;
+                padding: 0.5rem 1.25rem;
+                border-radius: 2rem;
+                letter-spacing: 0.3px;
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(56, 189, 248, 0.3);
+                margin-bottom: 2rem;
+            }
+
+            h1 {
+                font-size: clamp(2.5rem, 8vw, 5rem);
+                font-weight: 700;
+                line-height: 1.1;
+                margin-bottom: 1.5rem;
+                background: linear-gradient(to right, #f0f9ff, #bae6fd, #7dd3fc);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                letter-spacing: -0.02em;
+            }
+
+            .lead {
+                font-size: clamp(1.1rem, 4vw, 1.5rem);
+                color: #cbd5e1;
+                max-width: 42rem;
+                margin: 0 auto 2.5rem;
+                opacity: 0.9;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 1.5rem;
+                margin: 3rem 0 2.5rem;
+            }
+
+            .card {
+                background: rgba(30, 41, 59, 0.6);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(71, 85, 105, 0.4);
+                border-radius: 1.5rem;
+                padding: 1.75rem 1.25rem;
+                text-align: left;
+                transition:
+                    transform 0.2s ease,
+                    border-color 0.2s ease;
+            }
+
+            .card:hover {
+                transform: translateY(-4px);
+                border-color: #38bdf8;
+                background: rgba(30, 41, 59, 0.8);
+            }
+
+            .card h3 {
+                font-size: 1.25rem;
+                margin-bottom: 0.5rem;
+                color: #f8fafc;
+            }
+
+            .card p {
+                color: #94a3b8;
+                font-size: 0.95rem;
+                margin-bottom: 1rem;
+            }
+
+            .card-link {
+                color: #38bdf8;
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 0.95rem;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.25rem;
+            }
+
+            .card-link:hover {
+                color: #7dd3fc;
+                text-decoration: underline;
+            }
+
+            .btn-group {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin: 2rem 0;
+            }
+
+            .btn {
+                display: inline-block;
+                padding: 0.875rem 2rem;
+                border-radius: 3rem;
+                font-weight: 600;
+                text-decoration: none;
+                transition: all 0.2s ease;
+                font-size: 1rem;
+            }
+
+            .btn-primary {
+                background: #38bdf8;
+                color: #0f172a;
+                box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+            }
+
+            .btn-primary:hover {
+                background: #7dd3fc;
+                transform: scale(1.02);
+                box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+            }
+
+            .btn-outline {
+                border: 1px solid #475569;
+                color: #e2e8f0;
+            }
+
+            .btn-outline:hover {
+                border-color: #38bdf8;
+                background: rgba(56, 189, 248, 0.1);
+                color: #ffffff;
+            }
+
+            .footer-note {
+                margin-top: 3rem;
+                font-size: 0.875rem;
+                color: #64748b;
+                border-top: 1px solid #1e293b;
+                padding-top: 2rem;
+            }
+
+            .footer-note a {
+                color: #94a3b8;
+                text-decoration: none;
+                border-bottom: 1px dotted #475569;
+            }
+
+            .footer-note a:hover {
+                color: #38bdf8;
+                border-bottom-color: #38bdf8;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* simple status indicator */
+            .server-status {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: #1e293b;
+                padding: 0.5rem 1.25rem;
+                border-radius: 2rem;
+                border: 1px solid #334155;
+                margin-bottom: 2rem;
+            }
+
+            .status-dot {
+                width: 0.75rem;
+                height: 0.75rem;
+                background: #10b981;
+                border-radius: 50%;
+                display: inline-block;
+                box-shadow: 0 0 12px #10b981;
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0.6;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="hero">
+                <!-- server indicator -->
+                <div class="server-status">
+                    <span class="status-dot"></span>
+                    <span>server root · portfolio active</span>
+                </div>
+
+                <h1>Portfolio Server</h1>
+                <p class="lead">Welcome to the root of my creative space. Projects, experiments, and professional work live here.</p>
+
+                <!-- quick action buttons -->
+                <div class="btn-group">
+                    <a href="#" class="btn btn-primary">View portfolio →</a>
+                    <a href="#" class="btn btn-outline">GitHub</a>
+                    <a href="#" class="btn btn-outline">Contact</a>
+                </div>
+
+                <!-- project preview grid -->
+                <div class="grid">
+                    <div class="card">
+                        <h3>Web Creations</h3>
+                        <p>Responsive apps, interactive frontends, and modern design experiments.</p>
+                        <a href="#" class="card-link">case studies →</a>
+                    </div>
+                    <div class="card">
+                        <h3>Visual work</h3>
+                        <p>3D art, graphics, and visual explorations — tools & galleries.</p>
+                        <a href="#" class="card-link">see visuals →</a>
+                    </div>
+                    <div class="card">
+                        <h3>Code lab</h3>
+                        <p>Open source, utilities, and backend prototypes. Always building.</p>
+                        <a href="#" class="card-link">browse repos →</a>
+                    </div>
+                </div>
+
+                <!-- simple footer / server info -->
+                <div class="footer-note">
+                    <p>
+                        ✨ <strong>Portfolio server</strong> · root index served from /var/www/portfolio (or your deploy path)<br />
+                        <a href="#">admin</a> · <a href="#">status</a> · <a href="#">resume</a> · <a href="#">imprint</a>
+                    </p>
+                    <p style="margin-top: 1rem; font-size: 0.8rem">← everything here is a work in progress, but the server is up →</p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
