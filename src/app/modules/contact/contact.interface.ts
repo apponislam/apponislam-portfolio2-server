@@ -1,6 +1,8 @@
+import { Types } from "mongoose";
+
 export type ContactStatus = "PENDING" | "READ" | "REPLIED" | "SOLVED" | "REMOVED";
 
-export interface Contact {
+export interface IContact {
     name: string;
     email: string;
     subject: string;
@@ -9,9 +11,12 @@ export interface Contact {
     socialLink?: string;
     status: ContactStatus;
 
-    repliedBy?: string;
+    repliedBy?: Types.ObjectId;
     repliedAt?: Date;
     replyMessage?: string;
 
     isDeleted: boolean;
+
+    removedBy?: Types.ObjectId;
+    removeReason?: string;
 }
