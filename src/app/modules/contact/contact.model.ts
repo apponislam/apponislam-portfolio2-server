@@ -43,8 +43,14 @@ const contactSchema = new Schema<IContact>(
     },
 );
 
-// Compound indexes for better performance
-contactSchema.index({ status: 1, isDeleted: 1, email: 1 });
-contactSchema.index({ repliedBy: 1, repliedAt: -1 });
+// Essential indexes for your most common queries
+contactSchema.index({ status: 1, isDeleted: 1, createdAt: -1 }); // Dashboard filtering
+contactSchema.index({ email: 1, status: 1 }); // Email lookups
+contactSchema.index({ repliedBy: 1, repliedAt: -1 }); // Reply tracking
+contactSchema.index({ removedBy: 1, createdAt: -1 }); // Removal tracking
+contactSchema.index({ createdAt: -1 }); // Default sorting
+
+// Optional: text search if needed
+contactSchema.index({ name: "text", email: "text", message: "text" });
 
 export const ContactModel = mongoose.model<IContact>("Contact", contactSchema);
