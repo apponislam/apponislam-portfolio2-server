@@ -4,10 +4,21 @@ import { IContact } from "./contact.interface";
 
 const contactSchema = new Schema<IContact>(
     {
-        name: { type: String, required: true, index: true },
-        email: { type: String, required: true, index: true },
-        subject: { type: String, required: true },
-        message: { type: String, required: true },
+        name: {
+            type: String,
+            required: [true, "Name is required"],
+            index: true,
+        },
+        email: {
+            type: String,
+            required: [true, "Email is required"],
+            index: true,
+        },
+
+        message: {
+            type: String,
+            required: [true, "Message is required"],
+        },
 
         socialLink: { type: String },
 

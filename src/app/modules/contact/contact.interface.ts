@@ -5,7 +5,6 @@ export type ContactStatus = "PENDING" | "READ" | "REPLIED" | "SOLVED" | "REMOVED
 export interface IContact {
     name: string;
     email: string;
-    subject: string;
     message: string;
 
     socialLink?: string;
