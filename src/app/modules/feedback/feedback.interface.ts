@@ -3,7 +3,7 @@ export type FeedbackStatus = "pending" | "reviewed" | "resolved" | "dismissed";
 export type FeedbackPriority = "low" | "medium" | "high";
 
 export interface IFeedback {
-    id: string;
+    _id?: string;
     category: FeedbackCategory;
     title: string;
     message: string;
@@ -20,4 +20,7 @@ export interface IFeedback {
     ipAddress?: string;
     source?: "web" | "mobile" | "email";
     assignedTo?: string;
+    isDeleted?: boolean;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
