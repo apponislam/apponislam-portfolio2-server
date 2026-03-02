@@ -3,7 +3,6 @@ import catchAsync from "../../../utils/catchAsync";
 import sendResponse from "../../../utils/sendResponse";
 import { Request, Response } from "express";
 import { feedbackServices } from "./feedback.services";
-import ApiError from "../../../errors/ApiError";
 
 // Create feedback
 const createFeedback = catchAsync(async (req: Request, res: Response) => {
