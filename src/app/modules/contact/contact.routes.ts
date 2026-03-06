@@ -31,4 +31,4 @@ router.delete("/:id/permanent", authorize(["superadmin"]), contactControllers.pe
 
 router.post("/bulk/status", authorize(["admin", "superadmin"]), validateRequest(contactValidation.bulkUpdate), contactControllers.bulkUpdateStatus);
 
-export default router;
+export const contactRoutes = router;
